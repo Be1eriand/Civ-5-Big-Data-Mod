@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by ModBuddy on 12/15/2015 -->
+<GameData>
+	<Language_en_US>
+		<Row Tag="TXT_KEY_BRD_OPTIONS_TITLE">
+			<Text>BRD Options</Text>
+		</Row>
+		<Row Tag="TXT_KEY_BRD_OPTIONS_WHOSWINNING">
+			<Text>Suppress Who's Winning Popup</Text>
+		</Row>
+		<Row Tag="TXT_KEY_BRD_OPTIONS_GOLDENAGE">
+			<Text>Suppress Golden Age Popup</Text>
+		</Row>
+		<Row Tag="TXT_KEY_BRD_OPTIONS_NATURALWONDER">
+			<Text>Suppress Natural Wonder Popup</Text>
+		</Row>
+	</Language_en_US>
+</GameData>
