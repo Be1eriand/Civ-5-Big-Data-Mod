@@ -2,7 +2,7 @@
 -- Author: Be1eriand
 -- DateCreated: 12/13/2015
 --------------------------------------------------------------
-
+MapModData.BattleRoyaleData = {};
 include("BRDLib");
 logger:info("Processing BRDOptions");
 
@@ -12,7 +12,8 @@ function ShowHideHandler(bIsHide, bIsInit)
 		UpdateOptions();
 	end
 end
-ContextPtr:SetShowHideHandler(ShowHideHandler); 
+ContextPtr:SetShowHideHandler(ShowHideHandler);
+Controls.BRDOptionBox:SetHide(true);
 
 function UpdateOptions()
 	local bOn = false;
@@ -36,7 +37,8 @@ function UpdateOptions()
 end;
 
 function OnClose()
-  UIManager:PopModal(ContextPtr);
+  logger:debug("Closing Options");
+  Controls.BRDOptionBox:SetHide(true);
 end
 Controls.CloseButton:RegisterCallback( Mouse.eLClick, OnClose);
 
@@ -64,3 +66,12 @@ function OnNaturalWonderCheckbox(bIsChecked)
 	setBRDataOption("NaturalWonder", bIsChecked)
 end;
 Controls.NaturalWonderCheckbox:RegisterCheckHandler(OnNaturalWonderCheckbox);
+
+function onBRDoptions()
+	logger:debug("Opening Options");
+	
+	local hidden = Controls.BRDOptionBox:IsHidden();
+	Controls.BRDOptionBox:SetHide(not hidden);
+end
+
+Controls.OptionButton:RegisterCallback(Mouse.eLClick, onBRDoptions);

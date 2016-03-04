@@ -14,5 +14,8 @@
 		<Row Tag="TXT_KEY_BRD_OPTIONS_NATURALWONDER">
 			<Text>Suppress Natural Wonder Popup</Text>
 		</Row>
+		<Row Tag="TXT_KEY_BRD_OPTIONS_BUTTON">
+			<Text>BRD Options</Text>
+		</Row>
 	</Language_en_US>
 </GameData>

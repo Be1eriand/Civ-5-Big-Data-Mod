@@ -27,7 +27,7 @@ function InitBRD_database()
 	
 	if (tables["BRDataCivTable"] ~= true) then
 		logger:debug("Creating Battle Royale Data Civ Table");
-		for row in db.Query('CREATE TABLE BRDataCivTable(ID INTEGER PRIMARY KEY,PlayerID INTEGER, PlayerName TEXT,Alive TEXT,StrategicResources TEXT,LuxuryResources TEXT,BonusResources TEXT,Policies TEXT,ReligiousGold INTEGER,DiplomaticGold INTEGER)') do end;
+		for row in db.Query('CREATE TABLE BRDataCivTable(ID INTEGER PRIMARY KEY,PlayerID INTEGER, PlayerName TEXT,Alive TEXT,StrategicResources TEXT,LuxuryResources TEXT,BonusResources TEXT,Policies TEXT,ReligiousGold INTEGER,DiplomaticGold INTEGER,Denouced TEXT,AtWar TEXT,Friends TEXT)') do end;
 		for row in db.Query('CREATE INDEX BRDataCivIndex on BRDataCivTable(PlayerID)') do end;
     end;
 
@@ -112,11 +112,18 @@ function UpdateCivData(pPlayer)
 	local CivData = {}
 
 	CivData.PlayerID = pPlayer:GetID()
-	CivData.PlayerName = pPlayer:GetCivilizationDescription()
+	CivData.PlayerName = pPlayer:GetCivilizationShortDescription()
 	CivData.Alive = tostring(pPlayer:IsAlive())
 	CivData.Policies = getNumCivPolicies(pPlayer)
 	CivData.ReligiousGold = pPlayer:GetGoldPerTurnFromReligion()
 	CivData.DiplomaticGold = pPlayer:GetGoldPerTurnFromDiplomacy()
+	CivData.Denounced = PlayersWeHaveDenounced(pPlayer)
+	CivData.AtWar = PlayersAtWar(pPlayer)
+	CivData.Friends = PlayersFriends(pPlayer)
+
+	logger:debug("We have denouced :" .. CivData.Denounced);
+	logger:debug("We are at war with :" .. CivData.AtWar);
+	logger:debug("We are friends with :" .. CivData.Friends);
 
 	local PlayerResources = getPlayerResources(pPlayer);
 
@@ -124,7 +131,7 @@ function UpdateCivData(pPlayer)
 	CivData.LuxuryResources = PlayerResources["Luxury Resources"]
 	CivData.BonusResources = PlayerResources["Bonus Resources"]
 
-	for row in db.Query('INSERT OR REPLACE into BRDataCivTable(ID,PlayerID,PlayerName,Alive,StrategicResources,LuxuryResources,BonusResources,Policies,ReligiousGold,DiplomaticGold) VALUES((SELECT ID FROM BRDataCivTable where PlayerName ="'.. CivData.PlayerName ..'"),'.. CivData.PlayerID ..',"'.. CivData.PlayerName ..'","'.. CivData.Alive ..'","' .. CivData.StrategicResources.Total .. '","' .. CivData.LuxuryResources.Total .. '","' .. CivData.BonusResources.Total .. '","' .. CivData.Policies .. '","' .. CivData.ReligiousGold .. '","' .. CivData.DiplomaticGold .. '")') do end;
+	for row in db.Query('INSERT OR REPLACE into BRDataCivTable(ID,PlayerID,PlayerName,Alive,StrategicResources,LuxuryResources,BonusResources,Policies,ReligiousGold,DiplomaticGold,Denouced,AtWar,Friends) VALUES((SELECT ID FROM BRDataCivTable where PlayerName ="'.. CivData.PlayerName ..'"),'.. CivData.PlayerID ..',"'.. CivData.PlayerName ..'","'.. CivData.Alive ..'","' .. CivData.StrategicResources.Total .. '","' .. CivData.LuxuryResources.Total .. '","' .. CivData.BonusResources.Total .. '","' .. CivData.Policies .. '","' .. CivData.ReligiousGold .. '","' .. CivData.DiplomaticGold .. '","'.. CivData.Denounced ..'","' .. CivData.AtWar .. '","' .. CivData.Friends ..'")') do end;
 
 end;
 

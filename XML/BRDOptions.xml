@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by ModBuddy on 12/13/2015 -->
 <Context Color0="Beige" Color1="Black,256" Font="TwCenMT18" FontStyle="Shadow" >
-	<Grid String="TXT_KEY_BRD_OPTIONS_TITLE" Size="300,300" Anchor="C,C" Style="Grid9DetailFive140" ConsumeMouse="1">
+	<Grid String="TXT_KEY_BRD_OPTIONS_TITLE" Size="300,300" Anchor="C,C" Style="Grid9DetailFive140" ConsumeMouse="1" ID="BRDOptionBox">
 			<Stack Anchor="R,C" Offset="25,0" Padding="15" >
 				<CheckBox String="TXT_KEY_BRD_OPTIONS_WHOSWINNING" WrapWidth="250" Anchor="R,C" ID="WhosWinningCheckbox"/>
 
@@ -11,4 +11,6 @@
 			</Stack>
 		<Button Anchor="R,T" Size="32,32" Offset="26.6" TextureOffset="28,-2" Texture="CloseMinButtons.dds"  ToolTip="TXT_KEY_ESC_TO_EXIT" ID="CloseButton" Hidden="0"/>
 	</Grid>
+
+	<TextButton ID="OptionButton" Anchor="R,T" Offset="450,6" Font="TwCenMT20" NormalState="Beige_Black" MouseOver="White_Black" ButtonDown="Beige_Black_Alpha" String="TXT_KEY_BRD_OPTIONS_BUTTON" />
 </Context>

@@ -176,3 +176,71 @@ function getNumCivPolicies(pPlayer)
 
 	return sPolicies
 end;
+function PlayersWeHaveDenounced(pPlayer)
+
+	local text = "";
+
+	for iPlayerLoop = 0, GameDefines.MAX_MAJOR_CIVS-1, 1 do
+
+		pOtherPlayer = Players[iPlayerLoop];
+
+		if (pPlayer:IsDenouncedPlayer(iPlayerLoop)) then
+
+			text = text .. " " .. pOtherPlayer:GetCivilizationShortDescription() .. ":"
+
+			if(pPlayer.GetDenouncedPlayerCounter ~= nil) then
+				local turnsLeft = GameDefines.DENUNCIATION_EXPIRATION_TIME - pPlayer:GetDenouncedPlayerCounter(iOtherPlayer);
+				text = text .. turnsLeft;
+			end
+
+		end;
+	end;
+
+	return text;
+end;
+
+function PlayersAtWar(pPlayer)
+
+	local iTeam = pPlayer:GetTeam();
+	local pTeam = Teams[iTeam];
+	local text = "";
+
+	for iPlayerLoop = 0, GameDefines.MAX_MAJOR_CIVS-1, 1 do
+
+		local pOtherPlayer = Players[iPlayerLoop];
+		local iOtherTeam = pOtherPlayer:GetTeam();
+		local pOtherTeam = Teams[iOtherTeam];
+
+		if (pTeam:IsAtWar(iOtherTeam)) then
+			text = text .. " " .. pOtherPlayer:GetCivilizationShortDescription()
+		end;
+	end;
+
+	return text;
+end;
+
+function PlayersFriends(pPlayer)
+
+	local iTeam = pPlayer:GetTeam();
+	local pTeam = Teams[iTeam];
+
+	local text = "";
+
+	for iPlayerLoop = 0, GameDefines.MAX_MAJOR_CIVS-1, 1 do
+
+		pOtherPlayer = Players[iPlayerLoop];
+
+		if (pPlayer:IsDoF(iPlayerLoop)) then
+
+			text = text .. " " .. pOtherPlayer:GetCivilizationShortDescription() .. ":"
+
+			if(pPlayer.GetDenouncedPlayerCounter ~= nil) then
+				local turnsLeft = GameDefines.DOF_EXPIRATION_TIME - pPlayer:GetDoFCounter(iPlayerLoop);
+				text = text .. turnsLeft;
+			end
+
+		end;
+	end;
+
+	return text;
+end;
