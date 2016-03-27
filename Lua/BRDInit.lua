@@ -7,7 +7,3 @@
 -- Setting up the main shared table for the mod
 include("BRDLib")
 logger:info("Initialising");
-
-
--- Data manager for Battle Royale Data.
-ContextPtr:LoadNewContext("BRDataManager")

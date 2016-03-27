@@ -2,4 +2,5 @@
 <!-- Created by ModBuddy on 3/4/2016 11:01:45 PM -->
 <Context ColorSet="Beige_Black_Alpha" Font="TwCenMT14" FontStyle="Shadow" ConsumeMouse="0" >
 	<LuaContext FileName="BRDOptions" ID="Options" />
+	<LuaContext FileName="BRDataManager" ID="BRDataManager" />
 </Context>

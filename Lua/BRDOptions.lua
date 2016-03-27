@@ -34,10 +34,15 @@ function UpdateOptions()
 	end;
 	Controls.NaturalWonderCheckbox:SetCheck(bOn);
 
+	bOn = false;
+	if (getBRDataOption("WorldCongress") ==1) then
+		bOn = true;
+	end;
+	Controls.WorldCongressCheckbox:SetCheck(bOn);
+
 end;
 
 function OnClose()
-  logger:debug("Closing Options");
   Controls.BRDOptionBox:SetHide(true);
 end
 Controls.CloseButton:RegisterCallback( Mouse.eLClick, OnClose);
@@ -67,9 +72,12 @@ function OnNaturalWonderCheckbox(bIsChecked)
 end;
 Controls.NaturalWonderCheckbox:RegisterCheckHandler(OnNaturalWonderCheckbox);
 
+function OnWorldCongressCheckbox(bIsChecked)
+	setBRDataOption("WorldCongress", bIsChecked)
+end;
+Controls.WorldCongressCheckbox:RegisterCheckHandler(OnWorldCongressCheckbox);
+
 function onBRDoptions()
-	logger:debug("Opening Options");
-	
 	local hidden = Controls.BRDOptionBox:IsHidden();
 	Controls.BRDOptionBox:SetHide(not hidden);
 end

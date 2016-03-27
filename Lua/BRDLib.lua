@@ -5,7 +5,7 @@
 
 include("BRDLogger");
 logger = LoggerType:new();
-logger:setLevel(DEBUG);
+logger:setLevel(INFO);
 logger:debug("Processing BRDLib");
 
 function BRDModID()
@@ -25,55 +25,163 @@ end;
 
 local modUserData = Modding.OpenUserData(BRDModID(), BRDModVersion());
 
-
-
-function GetReplayType(type)
-
-  if (type == "Score") then return "REPLAYDATASET_SCORE";
-  elseif (type == "MilitaryMight") then return "REPLAYDATASET_MILITARYMIGHT";
-  elseif (type == "Culture") then return "REPLAYDATASET_CULTUREPERTURN";
-  elseif (type == "Happiness") then return "REPLAYDATASET_EXCESSHAPINESS";
-  elseif (type == "Science") then return "REPLAYDATASET_SCIENCEPERTURN";
-  elseif (type == "Land") then return "REPLAYDATASET_TOTALLAND";
-  elseif (type == "Production") then return "REPLAYDATASET_PRODUCTIONPERTURN";
-  elseif (type == "Population") then return "REPLAYDATASET_POPULATION";
-  elseif (type == "GrossGPT") then return "REPLAYDATASET_GOLDPERTURN";
-  elseif (type == "Treasury") then return "REPLAYDATASET_TOTALGOLD";
-  elseif (type == "Food") then return "REPLAYDATASET_FOODPERTURN";
-  elseif (type == "Cities") then return "REPLAYDATASET_CITYCOUNT";
-  elseif (type == "SocialPolicies") then return "REPLAYDATASET_NUMBEROFPOLICIES";
-  elseif (type == "Techs") then return "REPLAYDATASET_TECHSKNOWN";
-
-  -- Types that are unique to Battle Royal Data Mod
-  elseif (type == "Wonders") then return "BRDDATASET_WONDERS";
-  elseif (type == "NetGPT") then return "BRDDATASET_NETGOLDPERTURN";
-  elseif (type == "MilitarySeaMight") then return "BRDDATASET_MILITARYSEAMIGHT";
-  elseif (type == "MilitaryAirMight") then return "BRDDATASET_MILITARYAIRMIGHT";
-  elseif (type == "MilitaryLandMight") then return "BRDDATASET_MILITARYLANDMIGHT";
-  elseif (type == "NumMilitary") then return "BRDDATASET_NUMMILITARY";
-  elseif (type == "NumSeaMilitary") then return "BRDDATASET_NUMSEAMILITARY";
-  elseif (type == "NumAirMilitary") then return "BRDDATASET_NUMAIRMILITARY";
-  elseif (type == "NumLandMilitary") then return "BRDDATASET_NUMLANDMILITARY";
-  end;
-
-  return type;
-end;
-
 function escapeCSV(s)
-	if string.find(s, '[,"]') then
-		s = '"' .. string.gsub(s, '"', '""') .. '"'
+	
+	if type(s) == "string" then
+		if string.find(s, '[,"]') then
+			s = '"' .. string.gsub(s, '"', '""') .. '"'
+		end
+	elseif type(s) == "boolean" then
+		if s == true then
+			s = "True"
+		else 
+			s = "False"
+		end
 	end
+
 	return s
 end
 
-function toCSV(t)
+function getPlayer(PlayerID)
+
 	local s = ""
-	local r = ""
-	for item, value in pairs(t) do
-		s = s .. "," .. escapeCSV(item)
-		r = r .. "," .. escapeCSV(value)
+	if PlayerID == -1 then
+		s = "None"
+	else
+		local pPlayer = Players[PlayerID];
+		s = pPlayer:GetCivilizationShortDescription();
 	end
-	return string.sub(s,2), string.sub(r,2) 
+
+	return s
+end
+
+function CityDataToCSV(CD)
+	
+	local s = escapeCSV(CD.Turn)
+
+	s = s .. "," .. escapeCSV(CD.CityName)
+	s = s .. "," .. escapeCSV(CD.X)
+	s = s .. "," .. escapeCSV(CD.Y)
+	s = s .. "," .. escapeCSV(getPlayer(CD.Original_Owner))
+	s = s .. "," .. escapeCSV(getPlayer(CD.Current_Owner))
+	s = s .. "," .. escapeCSV(getPlayer(CD.Previous_Owner))
+	s = s .. "," .. escapeCSV(CD.Founded)
+	s = s .. "," .. escapeCSV(CD.Acquired)
+	s = s .. "," .. escapeCSV(CD.Religion)
+	s = s .. "," .. escapeCSV(CD.Population)
+	s = s .. "," .. escapeCSV(CD.GPT)
+	s = s .. "," .. escapeCSV(CD.Science)
+	s = s .. "," .. escapeCSV(CD.Production)
+	s = s .. "," .. escapeCSV(CD.Food)
+	s = s .. "," .. escapeCSV(CD.Culture)
+	s = s .. "," .. escapeCSV(CD.Faith)
+
+	logger:debug(s)
+
+	Game:WriteCSV("BRDCities.CSV",s)
+end
+
+function CivDataToCSV(CD)
+	
+	local s = escapeCSV(CD.Turn)
+
+	s = s .. "," .. escapeCSV(CD.PlayerID)
+	s = s .. "," .. escapeCSV(CD.PlayerName)
+	s = s .. "," .. escapeCSV(CD.Alive)
+	s = s .. "," .. escapeCSV(CD.GoldenAge)
+	s = s .. "," .. escapeCSV(CD.Era)
+	s = s .. "," .. escapeCSV(CD.StrategicResources.Total)
+	s = s .. "," .. escapeCSV(CD.LuxuryResources.Total)
+	s = s .. "," .. escapeCSV(CD.BonusResources.Total)
+	s = s .. "," .. escapeCSV(CD.Policies)
+	s = s .. "," .. escapeCSV(CD.ReligiousGold)
+	s = s .. "," .. escapeCSV(CD.DiplomaticGold)
+	s = s .. "," .. escapeCSV(CD.Denounced)
+	s = s .. "," .. escapeCSV(CD.AtWar)
+	s = s .. "," .. escapeCSV(CD.Friends)
+
+	logger:debug(s)
+
+	Game:WriteCSV("BRDCivData.csv",s)
+end
+
+function DataToCSV(CD)
+	
+	local s = escapeCSV(CD.Turn)
+
+	s = s .. "," .. escapeCSV(CD.PlayerID)
+	s = s .. "," .. escapeCSV(CD.PlayerName)
+	s = s .. "," .. escapeCSV(CD.NetGPT)
+	s = s .. "," .. escapeCSV(CD.GrossGPT)
+	s = s .. "," .. escapeCSV(CD.Treasury)
+	s = s .. "," .. escapeCSV(CD.MilitaryMight)
+	s = s .. "," .. escapeCSV(CD.MilitarySeaMight)
+	s = s .. "," .. escapeCSV(CD.MilitaryAirMight)
+	s = s .. "," .. escapeCSV(CD.MilitaryLandMight)
+	s = s .. "," .. escapeCSV(CD.NumMilitary)
+	s = s .. "," .. escapeCSV(CD.NumSeaMilitary)
+	s = s .. "," .. escapeCSV(CD.NumAirMilitary)
+	s = s .. "," .. escapeCSV(CD.NumLandMilitary)
+	s = s .. "," .. escapeCSV(CD.Score)
+	s = s .. "," .. escapeCSV(CD.Happiness)
+	s = s .. "," .. escapeCSV(CD.Science)
+	s = s .. "," .. escapeCSV(CD.Techs)
+	s = s .. "," .. escapeCSV(CD.Land)
+	s = s .. "," .. escapeCSV(CD.Production)
+	s = s .. "," .. escapeCSV(CD.Food)
+	s = s .. "," .. escapeCSV(CD.SocialPolicies)
+	s = s .. "," .. escapeCSV(CD.Culture)
+	s = s .. "," .. escapeCSV(CD.Population)
+	s = s .. "," .. escapeCSV(CD.Cities)
+	s = s .. "," .. escapeCSV(CD.Wonders)
+	s = s .. "," .. escapeCSV(CD.Faith)
+	s = s .. "," .. escapeCSV(CD.Faithperturn)
+	s = s .. "," .. escapeCSV(CD.TradeRoutesUsed)
+	s = s .. "," .. escapeCSV(CD.GreatWorks)
+	s = s .. "," .. escapeCSV(CD.CivsInfluenced)
+	s = s .. "," .. escapeCSV(CD.TourismOutput)
+
+	logger:debug(s)
+
+	Game:WriteCSV("BRData.csv",s)
+end
+
+function ReligionDataToCSV(RD)
+	
+	local s = escapeCSV(RD.Turn)
+
+	s = s .. "," .. escapeCSV(RD.Name)
+	s = s .. "," .. escapeCSV(RD.Founder)
+	s = s .. "," .. escapeCSV(RD.HolyCity)
+	s = s .. "," .. escapeCSV(RD.Followers)
+	s = s .. "," .. escapeCSV(RD.NumCities)
+
+	Game:WriteCSV("BRDReligion.csv",s)
+
+end
+
+function CityFlipToCSV(CF)
+
+	local s = escapeCSV(CF.Turn)
+
+	s = s .. "," .. escapeCSV(CF.CityName)
+	s = s .. "," .. escapeCSV(CF.PreviousPlayerName)
+	s = s .. "," .. escapeCSV(CF.NewPlayerName)
+	s = s .. "," .. escapeCSV(CF.Population)
+
+	Game:WriteCSV("BRDCityFlips.csv",s)
+
+end
+
+function WonderDataToCSV(WD)
+
+	local s = escapeCSV(WD.Turn)
+
+	s = s .. "," .. escapeCSV(WD.Owner)
+	s = s .. "," .. escapeCSV(WD.Wonder)
+
+	Game:WriteCSV("BRDWonders.CSV",s)
+
 end
 
 function getBRDataOption(option)
@@ -142,8 +250,7 @@ function getPlayerResources(pPlayer)
 end;
 
 function getNumPolicyBranch(pPlayer, pPolicyBranch)
-
-	local iPolicyBranch = pPolicyBranch.ID
+	
 	local iCount = 0
 
 	for pPolicy in GameInfo.Policies() do
@@ -169,13 +276,16 @@ function getNumCivPolicies(pPlayer)
 
 		iCount = getNumPolicyBranch(pPlayer, pPolicyBranch)
 
-		if (iCount > 0) then
+		if (iCount > 0)then
 			sPolicies = sPolicies .. " " .. Locale.ConvertTextKey(pPolicyBranch.Description) .. ": " .. iCount
 		end
 	end
 
+	logger:debug(sPolicies)
+
 	return sPolicies
 end;
+
 function PlayersWeHaveDenounced(pPlayer)
 
 	local text = "";
@@ -196,6 +306,10 @@ function PlayersWeHaveDenounced(pPlayer)
 		end;
 	end;
 
+	if text == "" then
+		text = "None"
+	end;
+
 	return text;
 end;
 
@@ -214,6 +328,10 @@ function PlayersAtWar(pPlayer)
 		if (pTeam:IsAtWar(iOtherTeam)) then
 			text = text .. " " .. pOtherPlayer:GetCivilizationShortDescription()
 		end;
+	end;
+
+	if text == "" then
+		text = "None"
 	end;
 
 	return text;
@@ -240,6 +358,10 @@ function PlayersFriends(pPlayer)
 			end
 
 		end;
+	end;
+
+	if text == "" then
+		text = "None"
 	end;
 
 	return text;
